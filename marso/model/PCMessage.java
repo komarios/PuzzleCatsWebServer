@@ -1,23 +1,63 @@
 package marso.model;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.socket.TextMessage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PCMessage {
-	public String message = "";
-	public String user_id = "";
-	public String action  = "";
-	public String data    = "";
-	public String oppo_id = "";
+	
+	private static final Logger logger = Logger.getLogger(PCMessage.class);
+	private String messagePattern = "^\\d.*[_]\\d.*[&][a-z].*([:](.*))?[\\?]\\d.*[_]\\d.*$";
+	private Pattern pattern = Pattern.compile( messagePattern );
+	private String message = "";
+	private String user_id = "";
+	private String action  = "unknown";
+	private String data    = "";
+	private String oppo_id = "";
+	
 	public PCMessage( TextMessage textMessage ) throws Exception {
 		message = new String(textMessage.asBytes());
-		//     1_1&conn?1_2      1_1&break:1_1?1_2       lshg-lsvg-rshg-rsvg
-		user_id = message.substring(                      0, message.indexOf("&") );//1_1
-		action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );//conn
+	}
+	/*public void matchPrint(String mp){
+		Pattern myPattern = Pattern.compile( mp );
+		Matcher myMatcher = myPattern.matcher( message );
+		logger.warn( "PCMessage_matcher:"+myMatcher.matches()+"="+mp );
+	}*/
+	public boolean isValid(){
+		Matcher matcher = pattern.matcher( message );
+		return matcher.matches();
+	}
+	public PCMessage parseMessage(){
+		user_id = message.substring(                      0, message.indexOf("&") );
+		action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );
 		if( action.indexOf(":") >  -1 ){
-			data    = action.substring( action.indexOf(":")+1, action.length() );//:1_1
+			data    = action.substring( action.indexOf(":")+1, action.length() );
 			action  = message.substring( message.indexOf("&")+1, message.indexOf(":") );
 		}
-		oppo_id = message.substring( message.indexOf("?")+1, message.length()     );//1_2
-		System.out.println( message+" "+user_id+" "+action+" "+oppo_id );
+		oppo_id = message.substring( message.indexOf("?")+1, message.length()     );
+		return this;
 	}
+	
+	public String getMessage(){
+		return message;
+	}
+	public String getUserId(){
+		return user_id;
+	}	
+	public String getAction(){
+		return action;
+	}	
+	public String getData(){
+		return data;
+	}	
+	public String getOppoId(){
+		return oppo_id;
+	}
+	public void logMessage(){
+		logger.warn( "PCMessage_is:"+this.toString() );
+	}	
+	public String toString(){
+		return (message+":"+user_id+"&"+action+":"+data+"?"+oppo_id);
+	}		
 }
