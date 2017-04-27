@@ -24,34 +24,34 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 	
 	private void handleConnect( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{			
-		sessionList.put( pcmessage.user_id, session);
-		reverseSessionList.put( session.getId(), pcmessage.user_id );
+		sessionList.put( pcmessage.getUserId(), session);
+		reverseSessionList.put( session.getId(), pcmessage.getUserId() );
 		session.sendMessage( new TextMessage( "connok" ) );
-		if ( sessionList.get( pcmessage.oppo_id ) != null ) {
+		if ( sessionList.get( pcmessage.getOppoId() ) != null ) {
 			session.sendMessage( new TextMessage( "conn2ok" ) );
-			WebSocketSession oppoSession = sessionList.get( pcmessage.oppo_id );
+			WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 			oppoSession.sendMessage( new TextMessage( "conn2ok" ) );
 		}
 	}
 	
 	private void handleGridList( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		WebSocketSession oppoSession = sessionList.get( pcmessage.oppo_id );
+		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
 			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
 		else
-			oppoSession.sendMessage( new TextMessage( pcmessage.action ) );
+			oppoSession.sendMessage( new TextMessage( pcmessage.getAction() ) );
 	}
 	
 	private void handleReady( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		WebSocketSession oppoSession = sessionList.get( pcmessage.oppo_id );
+		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
 			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
 		else {
-			gameStartList.put( pcmessage.user_id, "ready");
+			gameStartList.put( pcmessage.getUserId(), "ready");
 			session.sendMessage( new TextMessage( "readyok" ) );
-			if ( gameStartList.get( pcmessage.oppo_id ) != null ) {
+			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
 				session.sendMessage( new TextMessage( "begin:7" ) );
 				oppoSession.sendMessage( new TextMessage( "begin:7" ) );
 			}
@@ -60,71 +60,87 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 	
 	private void handleBreak( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		WebSocketSession oppoSession = sessionList.get( pcmessage.oppo_id );
+		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
 			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
-		else if( gameStartList.get( pcmessage.oppo_id ) == null )
-			session.sendMessage( new TextMessage( "oppo_no_ready" ) );		
+		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
+			session.sendMessage( new TextMessage( "oppo_no_ready" ) );
 		else
-			oppoSession.sendMessage( new TextMessage( pcmessage.action ) );
+			oppoSession.sendMessage( new TextMessage( pcmessage.getAction() ) );
 		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
 	}
 	
 	private void handlePing( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		session.sendMessage( new TextMessage( "pong:"+pcmessage.data ) );
+		session.sendMessage( new TextMessage( "pong:"+pcmessage.getData() ) );
 		//TODO: Handle ping from user-to-user 
 	}
 	
 	private void handleKO( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		WebSocketSession oppoSession = sessionList.get( pcmessage.oppo_id );
+		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
 			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
-		else if( gameStartList.get( pcmessage.oppo_id ) == null )
+		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
 			session.sendMessage( new TextMessage( "oppo_no_ready" ) );
 		else {
 			oppoSession.sendMessage( new TextMessage( "ko" ) );
 			session.sendMessage( new TextMessage( "gg" ) );
 			oppoSession.sendMessage( new TextMessage( "gg" ) );
-			sessionList.remove(pcmessage.user_id);
-			sessionList.remove(pcmessage.oppo_id);
-			gameStartList.remove(pcmessage.user_id);
-			gameStartList.remove(pcmessage.oppo_id);	
+			sessionList.remove(pcmessage.getUserId());
+			sessionList.remove(pcmessage.getOppoId());
+			gameStartList.remove(pcmessage.getUserId());
+			gameStartList.remove(pcmessage.getOppoId());
 			reverseSessionList.remove(session.getId());
 			reverseSessionList.remove(oppoSession.getId());
 		}
 	}
+	
+	private void handleInvalidMessage( WebSocketSession session, PCMessage pcmessage )
+			throws InterruptedException, IOException{
+		session.sendMessage( new TextMessage( "Invalid Message:"+pcmessage.getMessage() ) );
+	}
 
+	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
+			throws InterruptedException, IOException, Exception {
+		switch( pcmessage.getAction() ) {
+			case "conn" :
+				handleConnect( session, pcmessage );
+				break;
+			case "lshg" :
+			case "lsvg" :
+			case "rshg" :
+			case "rsvg" :
+				handleGridList( session, pcmessage );
+				break;
+			case "ready" :
+				handleReady( session, pcmessage );
+				break;
+			case "break" :
+				handleBreak( session, pcmessage );
+				break;
+			case "ping" :
+				handlePing( session, pcmessage );
+				break;	
+			case "ko" :
+				handleKO( session, pcmessage );
+				break;
+			default :
+				handleInvalidMessage( session, pcmessage );
+		}
+	}
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
 		PCMessage pcmessage = null;
 		try{
 			pcmessage = new PCMessage( textMessage );
-			switch( pcmessage.action ) {
-				case "conn" :
-					handleConnect( session, pcmessage );
-					break;
-				case "lshg" :
-				case "lsvg" :
-				case "rshg" :
-				case "rsvg" :
-					handleGridList( session, pcmessage );
-					break;
-				case "ready" :
-					handleReady( session, pcmessage );
-					break;
-				case "break" :
-					handleBreak( session, pcmessage );
-					break;
-				case "ping" :
-					handlePing( session, pcmessage );
-					break;	
-				case "ko" :
-					handleKO( session, pcmessage );
-					break;
-			}
+			pcmessage.logMessage();
+			if ( pcmessage.isValid() ){
+				pcmessage.parseMessage();
+				handlePCMessage( session, pcmessage );
+			} else 
+				handleInvalidMessage( session, pcmessage );
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
 			throw e;
@@ -144,7 +160,7 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		System.out.println( "WebSocket was closed" );
-		String user_id = reverseSessionList.get(session.getId());
+		String user_id = reverseSessionList.get( session.getId() );
 		if ( user_id != null ) {
 			if( sessionList.get(user_id) != null )
 				sessionList.remove(user_id);
