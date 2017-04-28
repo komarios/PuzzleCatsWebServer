@@ -104,6 +104,9 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
 			throws InterruptedException, IOException, Exception {
 		switch( pcmessage.getAction() ) {
+			case "adminlist":
+				handleAdminList( session );
+				break;
 			case "conn" :
 				handleConnect( session, pcmessage );
 				break;
@@ -136,10 +139,9 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 		try{
 			pcmessage = new PCMessage( textMessage );
 			pcmessage.logMessage();
-			if ( pcmessage.isValid() ){
-				pcmessage.parseMessage();
+			if ( pcmessage.parseMessage() )
 				handlePCMessage( session, pcmessage );
-			} else 
+			else
 				handleInvalidMessage( session, pcmessage );
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
@@ -151,6 +153,12 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 			logger.error("Exception:", e);
 			session.sendMessage( new TextMessage( "Exception:" + e.getMessage() ) );
 		}
+	}
+	private void handleAdminList( WebSocketSession session )
+			throws InterruptedException, IOException{
+		session.sendMessage( new TextMessage( "sessionList:"+sessionList ) );
+		session.sendMessage( new TextMessage( "reverseSessionList:"+reverseSessionList ) );
+		session.sendMessage( new TextMessage( "gameStartList:"+gameStartList ) );
 	}
 	/*
 	@Override
