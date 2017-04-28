@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PCMessage {
-	
 	private static final Logger logger = Logger.getLogger(PCMessage.class);
 	private String messagePattern = "^\\d.*[_]\\d.*[&][a-z].*([:](.*))?[\\?]\\d.*[_]\\d.*$";
 	private Pattern pattern = Pattern.compile( messagePattern );
@@ -19,24 +18,34 @@ public class PCMessage {
 	public PCMessage( TextMessage textMessage ) throws Exception {
 		message = new String(textMessage.asBytes());
 	}
-	/*public void matchPrint(String mp){
+	private void debugMatchAndPrint(String mp){
 		Pattern myPattern = Pattern.compile( mp );
 		Matcher myMatcher = myPattern.matcher( message );
 		logger.warn( "PCMessage_matcher:"+myMatcher.matches()+"="+mp );
-	}*/
+	}
 	public boolean isValid(){
 		Matcher matcher = pattern.matcher( message );
 		return matcher.matches();
 	}
-	public PCMessage parseMessage(){
-		user_id = message.substring(                      0, message.indexOf("&") );
-		action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );
-		if( action.indexOf(":") >  -1 ){
-			data    = action.substring( action.indexOf(":")+1, action.length() );
-			action  = message.substring( message.indexOf("&")+1, message.indexOf(":") );
+	public boolean parseMessage(){
+		if( !isValid() ){
+			return false;
 		}
-		oppo_id = message.substring( message.indexOf("?")+1, message.length()     );
-		return this;
+		
+		try{
+			user_id = message.substring(                      0, message.indexOf("&") );
+			action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );
+			if( action.indexOf(":") >  -1 ){
+				data    = action.substring( action.indexOf(":")+1, action.length() );
+				action  = message.substring( message.indexOf("&")+1, message.indexOf(":") );
+			}
+			oppo_id = message.substring( message.indexOf("?")+1, message.length()     );
+		}catch(Exception e){
+			logger.error( "Exception in PCMessage_parseMessage:"+e.getMessage()+", and message = "+message );
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getMessage(){
