@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import marso.model.PCMessage;
 
 @Component
-public class GameMoveWSHandler extends TextWebSocketHandler {
+public class WebSocketEntryPoint extends TextWebSocketHandler {
 	private static final Logger logger = Logger.getLogger(GameMoveWSHandler.class);
 	//<user_id, session>
 	private final Map<String, WebSocketSession> sessionList = new ConcurrentHashMap<String, WebSocketSession>();
