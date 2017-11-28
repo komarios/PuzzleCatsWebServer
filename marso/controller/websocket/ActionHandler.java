@@ -20,6 +20,38 @@ public class ActionHandler {
 	//<session_id, user_id>
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
 	
+	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
+			throws InterruptedException, IOException, Exception {
+		switch( pcmessage.getAction() ) {
+			case "adminlist":
+				handleAdminList( session );
+				break;
+			case "conn" :
+				handleConnect( session, pcmessage );
+				break;
+			case "lshg" :
+			case "lsvg" :
+			case "rshg" :
+			case "rsvg" :
+				handleGridList( session, pcmessage );
+				break;
+			case "ready" :
+				handleReady( session, pcmessage );
+				break;
+			case "break" :
+				handleBreak( session, pcmessage );
+				break;
+			case "ping" :
+				handlePing( session, pcmessage );
+				break;	
+			case "ko" :
+				handleKO( session, pcmessage );
+				break;
+			default :
+				handleInvalidMessage( session, pcmessage );
+		}
+	}
+	
 	private void handleConnect( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{			
 		sessionList.put( pcmessage.getUserId(), session);
@@ -97,38 +129,6 @@ public class ActionHandler {
 	private void handleInvalidMessage( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
 		session.sendMessage( new TextMessage( "Invalid Message:"+pcmessage.getMessage() ) );
-	}
-
-	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
-			throws InterruptedException, IOException, Exception {
-		switch( pcmessage.getAction() ) {
-			case "adminlist":
-				handleAdminList( session );
-				break;
-			case "conn" :
-				handleConnect( session, pcmessage );
-				break;
-			case "lshg" :
-			case "lsvg" :
-			case "rshg" :
-			case "rsvg" :
-				handleGridList( session, pcmessage );
-				break;
-			case "ready" :
-				handleReady( session, pcmessage );
-				break;
-			case "break" :
-				handleBreak( session, pcmessage );
-				break;
-			case "ping" :
-				handlePing( session, pcmessage );
-				break;	
-			case "ko" :
-				handleKO( session, pcmessage );
-				break;
-			default :
-				handleInvalidMessage( session, pcmessage );
-		}
 	}
 	
 	private void handleAdminList( WebSocketSession session )
