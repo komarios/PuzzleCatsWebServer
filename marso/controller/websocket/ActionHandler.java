@@ -1,4 +1,4 @@
-package marso.controller;
+package marso.controller.websocket;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,9 @@ import java.util.List;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import marso.model.PCMessage;
 
-@Component
-public class GameMoveWSHandler extends TextWebSocketHandler {
-	private static final Logger logger = Logger.getLogger(GameMoveWSHandler.class);
+public class ActionHandler {
+	private static final Logger logger = Logger.getLogger(ActionHandler.class);
 	//<user_id, session>
 	private final Map<String, WebSocketSession> sessionList = new ConcurrentHashMap<String, WebSocketSession>();
 	//<user_id, game_start>
@@ -132,50 +130,11 @@ public class GameMoveWSHandler extends TextWebSocketHandler {
 				handleInvalidMessage( session, pcmessage );
 		}
 	}
-	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
-			throws InterruptedException, IOException {
-		PCMessage pcmessage = null;
-		try{
-			pcmessage = new PCMessage( textMessage );
-			pcmessage.logMessage();
-			if ( pcmessage.parseMessage() )
-				handlePCMessage( session, pcmessage );
-			else
-				handleInvalidMessage( session, pcmessage );
-		} catch (InterruptedException e){
-			logger.error("InterruptedException:", e);
-			throw e;
-		} catch (IOException e){
-			logger.error("IOException:", e);
-			throw e;
-		} catch (Exception e){
-			logger.error("Exception:", e);
-			session.sendMessage( new TextMessage( "Exception:" + e.getMessage() ) );
-		}
-	}
+	
 	private void handleAdminList( WebSocketSession session )
 			throws InterruptedException, IOException{
 		session.sendMessage( new TextMessage( "sessionList:"+sessionList ) );
 		session.sendMessage( new TextMessage( "reverseSessionList:"+reverseSessionList ) );
 		session.sendMessage( new TextMessage( "gameStartList:"+gameStartList ) );
-	}
-	/*
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-	}
-	*/		
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		System.out.println( "WebSocket was closed" );
-		String user_id = reverseSessionList.get( session.getId() );
-		if ( user_id != null ) {
-			if( sessionList.get(user_id) != null )
-				sessionList.remove(user_id);
-			if( gameStartList.get(user_id) != null )
-				gameStartList.remove(user_id);
-			reverseSessionList.remove(session.getId());
-			System.out.println( "WebSocket was cleaned up:"+user_id );
-		}
 	}
 }
