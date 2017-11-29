@@ -24,7 +24,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		logger.info( "WebSocket was closed:"+ session.getId() );
-		//TODO:cleanUpOnDisconnect( session, status);
+		//TODO:ActionHandler.INSTANCE.cleanUpOnDisconnect( session, status);
 		//OR
 		//TODO: handle reconnects
 	}
