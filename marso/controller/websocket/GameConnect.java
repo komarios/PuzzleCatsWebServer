@@ -1,6 +1,6 @@
 package marso.controller.websocket;
 
-protected class GameConnect extends GameAction {
+protected class GameConnect implements GameAction {
           public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
 			throws InterruptedException, IOException{			
 		sessionList.put( pcmessage.getUserId(), session);
