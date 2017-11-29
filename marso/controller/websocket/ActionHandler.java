@@ -39,6 +39,7 @@ protected class ActionHandler {
 		PCMessage pcmessage = null;
 		try{
 			pcmessage = new PCMessage( textMessage );
+			refreshSessionList( pcmessage.getUserId(), session );
 			GameAction action = actions.get( pcmessage.getAction() );
 			if (action == null) {
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
@@ -58,7 +59,12 @@ protected class ActionHandler {
 			logger.error("Exception:", e);
 			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
-	}	
+	}
+	private void refreshSessionList( pcmessage.getUserId(), session ){
+		sessionList.put( pcmessage.getUserId(), session);
+		reverseSessionList.put( session.getId(), pcmessage.getUserId() );
+		//TODO: Check for session hijacking
+	|
 	public void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
 		String user_id = reverseSessionList.get( session.getId() );
 		if ( user_id != null ) {
