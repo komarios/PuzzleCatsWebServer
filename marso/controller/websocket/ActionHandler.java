@@ -43,7 +43,8 @@ protected class ActionHandler {
 			if (action == null) {
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
 			}
-			action.execute( session, pcmessage );
+			WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
+			action.execute( session, pcmessage, oppoSession );
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
 			throw e;
