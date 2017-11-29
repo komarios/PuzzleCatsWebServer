@@ -1,6 +1,6 @@
 package marso.controller.websocket;
 
-protected class GameBreak extends GameAction {
+protected class GameBreak implements GameAction {
           public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
 			throws InterruptedException, IOException{			
 		if( oppoSession == null )
