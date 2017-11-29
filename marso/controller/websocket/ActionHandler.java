@@ -21,7 +21,8 @@ protected class ActionHandler {
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
 	private final Map<Key, GameAction> actions = new HashMap<>();
 	
-	public ActionHandler(){
+	public final static ActionHandler INSTANCE = new Singleton();	
+	private ActionHandler(){
 		actions.add("conn", new GameConnect());
 		actions.add("lshg", new GameGridListing());
 		actions.add("lsvg", new GameGridListing());
@@ -32,8 +33,7 @@ protected class ActionHandler {
 		actions.add("ping", new GamePing());
 		actions.add("ko", new GameEnd());
 		actions.add("adminlist", new GameAdminList());
-	}
-	
+	}	
 	public void handleMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
 		PCMessage pcmessage = null;
@@ -58,8 +58,7 @@ protected class ActionHandler {
 			logger.error("Exception:", e);
 			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
-	}
-	
+	}	
 	protected void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
 		String user_id = reverseSessionList.get( session.getId() );
 		if ( user_id != null ) {
@@ -70,8 +69,7 @@ protected class ActionHandler {
 			reverseSessionList.remove(session.getId());
 			logger.info( "WebSocket was cleaned up:"+user_id );
 		}
-	}
-	
+	}	
 	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
 	}
