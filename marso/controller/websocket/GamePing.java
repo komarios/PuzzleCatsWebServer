@@ -1,6 +1,6 @@
 package marso.controller.websocket;
 
-protected class GamePing extends GameAction {
+protected class GamePing implements GameAction {
           public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
 			throws InterruptedException, IOException{			
 		sendMsgToClient( session, "pong:"+pcmessage.getData() );
