@@ -1,10 +1,8 @@
-
 package marso.controller.websocket;
 
 protected class GameReady extends GameAction {
-          public void execute( WebSocketSession session, PCMessage pcmessage )
-			throws InterruptedException, IOException{			
-		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
+          public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
+			throws InterruptedException, IOException{
 		if( oppoSession == null )
 			sendMsgToClient( session, "oppo_no_conn" );
 		else {
