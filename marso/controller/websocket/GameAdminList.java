@@ -1,6 +1,6 @@
 package marso.controller.websocket;
 
-protected class GameAdminList extends GameAction {
+protected class GameAdminList implements GameAction {
           public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
 			throws InterruptedException, IOException{			
 		sendMsgToClient( session, "sessionList:"+sessionList );
