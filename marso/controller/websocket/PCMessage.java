@@ -1,4 +1,4 @@
-package marso.model.websocket;
+package marso.controller.websocket;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.socket.TextMessage;
