@@ -59,7 +59,7 @@ protected class ActionHandler {
 			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
 	}	
-	protected void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
+	public void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
 		String user_id = reverseSessionList.get( session.getId() );
 		if ( user_id != null ) {
 			if( sessionList.get(user_id) != null )
