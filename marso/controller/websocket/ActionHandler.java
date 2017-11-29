@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ActionHandler {
+protected class ActionHandler {
 	private static final Logger logger = Logger.getLogger(ActionHandler.class);
 	//<user_id, session>
 	private final Map<String, WebSocketSession> sessionList = new ConcurrentHashMap<String, WebSocketSession>();
@@ -19,6 +19,28 @@ public class ActionHandler {
 	private final Map<String, String> gameStartList = new ConcurrentHashMap<String, String>();
 	//<session_id, user_id>
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
+	
+	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
+			throws InterruptedException, IOException {
+		PCMessage pcmessage = null;
+		try{
+			pcmessage = new PCMessage( textMessage );
+			pcmessage.logMessage();
+			if ( pcmessage.parseMessage() )
+				handlePCMessage( session, pcmessage );
+			else
+				handleInvalidMessage( session, pcmessage );
+		} catch (InterruptedException e){
+			logger.error("InterruptedException:", e);
+			throw e;
+		} catch (IOException e){
+			logger.error("IOException:", e);
+			throw e;
+		} catch (Exception e){
+			logger.error("Exception:", e);
+			session.sendMessage( new TextMessage( "Exception:" + e.getMessage() ) );
+		}
+	}
 	
 	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
 			throws InterruptedException, IOException, Exception {
@@ -50,6 +72,11 @@ public class ActionHandler {
 			default :
 				handleInvalidMessage( session, pcmessage );
 		}
+	}
+	
+	private void handleInvalidMessage( WebSocketSession session, PCMessage pcmessage )
+			throws InterruptedException, IOException{
+		session.sendMessage( new TextMessage( "Invalid Message:"+pcmessage.getMessage() ) );
 	}
 	
 	private void handleConnect( WebSocketSession session, PCMessage pcmessage )
@@ -136,6 +163,19 @@ public class ActionHandler {
 		sendMsgToClient( session, "sessionList:"+sessionList );
 		sendMsgToClient( session, "reverseSessionList:"+reverseSessionList );
 		sendMsgToClient( session, "gameStartList:"+gameStartList );
+	}
+	
+	protected void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
+		logger.info( "WebSocket was closed:"+ session.getId() );
+		String user_id = reverseSessionList.get( session.getId() );
+		if ( user_id != null ) {
+			if( sessionList.get(user_id) != null )
+				sessionList.remove(user_id);
+			if( gameStartList.get(user_id) != null )
+				gameStartList.remove(user_id);
+			reverseSessionList.remove(session.getId());
+			logger.info( "WebSocket was cleaned up:"+user_id );
+		}
 	}
 	
 	private void sendMsgToClient( WebSocketSession session, String msg){
