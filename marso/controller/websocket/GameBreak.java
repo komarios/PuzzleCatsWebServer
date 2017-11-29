@@ -6,13 +6,10 @@ protected class GameBreak extends GameAction {
 		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
 			sendMsgToClient( session, "oppo_no_conn" );
-		else {
-			gameStartList.put( pcmessage.getUserId(), "ready");
-			sendMsgToClient( session,  "readyok" );
-			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
-				sendMsgToClient( session,  "begin:7" );
-				sendMsgToClient( oppoSession, "begin:7" );
-			}
-		}
+		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
+			sendMsgToClient( session, "oppo_no_ready" );
+		else
+			sendMsgToClient( oppoSession, pcmessage.getAction() );
+		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
           }
 }
