@@ -14,16 +14,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class WebSocketEntryPoint extends TextWebSocketHandler {
 	private static final Logger logger = Logger.getLogger(WebSocketEntryPoint.class);
+	
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		logger.info( "WebSocket was opened:"+ session.getId() );
+	}
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
+		logger.info( "WebSocket client "+ session.getId() +" send message:"+  new String(textMessage.asBytes()) );
 		handleTextMessage( session, textMessage );
-	}
-
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		logger.info( "WebSocket was opened:"+ session.getId() );
 	}
 	
 	@Override
