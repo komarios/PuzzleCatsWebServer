@@ -40,23 +40,24 @@ protected class ActionHandler {
 		try{
 			pcmessage = new PCMessage( textMessage );
 			pcmessage.logMessage();
-			if ( pcmessage.parseMessage() )
-				GameAction action = actions.get( pcmessage.getAction() );
-				if (action == null) {
-					handleInvalidMessage( session, pcmessage );
-				}
-				action.execute( session, pcmessage );
-			else
-				handleInvalidMessage( session, pcmessage );
+			pcmessage.parseMessage();
+			GameAction action = actions.get( pcmessage.getAction() );
+			if (action == null) {
+				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
+			}
+			action.execute( session, pcmessage );
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
 			throw e;
 		} catch (IOException e){
 			logger.error("IOException:", e);
 			throw e;
+		} catch (InvalidMessageException e){
+			logger.error("InvalidMessageException:", e);
+			sendMsgToClient( session,  "InvalidMessageException:" + e.getMessage() );
 		} catch (Exception e){
 			logger.error("Exception:", e);
-			session.sendMessage( new TextMessage( "Exception:" + e.getMessage() ) );
+			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
 	}
 	
