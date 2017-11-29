@@ -1,5 +1,5 @@
 package marso.controller.websocket;
 
 protected interface GameAction {
-          void execute(String data);
+         public void execute( WebSocketSession session, PCMessage pcmessage );
 }
