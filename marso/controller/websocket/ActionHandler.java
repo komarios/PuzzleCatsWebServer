@@ -60,7 +60,6 @@ protected class ActionHandler {
 	}
 	
 	protected void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
-		logger.info( "WebSocket was closed:"+ session.getId() );
 		String user_id = reverseSessionList.get( session.getId() );
 		if ( user_id != null ) {
 			if( sessionList.get(user_id) != null )
