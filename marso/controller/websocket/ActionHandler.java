@@ -56,11 +56,11 @@ public class ActionHandler {
 			throws InterruptedException, IOException{			
 		sessionList.put( pcmessage.getUserId(), session);
 		reverseSessionList.put( session.getId(), pcmessage.getUserId() );
-		session.sendMessage( new TextMessage( "connok" ) );
+		sendMsgToClient( session, "connok" );
 		if ( sessionList.get( pcmessage.getOppoId() ) != null ) {
-			session.sendMessage( new TextMessage( "conn2ok" ) );
+			sendMsgToClient( session, "conn2ok" );
 			WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
-			oppoSession.sendMessage( new TextMessage( "conn2ok" ) );
+			sendMsgToClient( oppoSession, "conn2ok" );
 		}
 	}
 	
@@ -68,22 +68,22 @@ public class ActionHandler {
 			throws InterruptedException, IOException{
 		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
-			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
+			sendMsgToClient( session, "oppo_no_conn" );
 		else
-			oppoSession.sendMessage( new TextMessage( pcmessage.getAction() ) );
+			sendMsgToClient( oppoSession, pcmessage.getAction() );
 	}
 	
 	private void handleReady( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
 		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
-			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
+			sendMsgToClient( session, "oppo_no_conn" );
 		else {
 			gameStartList.put( pcmessage.getUserId(), "ready");
-			session.sendMessage( new TextMessage( "readyok" ) );
+			sendMsgToClient( session,  "readyok" );
 			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
-				session.sendMessage( new TextMessage( "begin:7" ) );
-				oppoSession.sendMessage( new TextMessage( "begin:7" ) );
+				sendMsgToClient( session,  "begin:7" );
+				sendMsgToClient( oppoSession, "begin:7" );
 			}
 		}
 	}
@@ -92,17 +92,17 @@ public class ActionHandler {
 			throws InterruptedException, IOException{
 		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
-			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
+			sendMsgToClient( session, "oppo_no_conn" );
 		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
-			session.sendMessage( new TextMessage( "oppo_no_ready" ) );
+			sendMsgToClient( session, "oppo_no_ready" );
 		else
-			oppoSession.sendMessage( new TextMessage( pcmessage.getAction() ) );
+			sendMsgToClient( oppoSession, pcmessage.getAction() );
 		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
 	}
 	
 	private void handlePing( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		session.sendMessage( new TextMessage( "pong:"+pcmessage.getData() ) );
+		sendMsgToClient( session, "pong:"+pcmessage.getData() );
 		//TODO: Handle ping from user-to-user 
 	}
 	
@@ -110,13 +110,13 @@ public class ActionHandler {
 			throws InterruptedException, IOException{
 		WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
 		if( oppoSession == null )
-			session.sendMessage( new TextMessage( "oppo_no_conn" ) );
+			sendMsgToClient( session, "oppo_no_conn" );
 		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
-			session.sendMessage( new TextMessage( "oppo_no_ready" ) );
+			sendMsgToClient( session, "oppo_no_ready" );
 		else {
-			oppoSession.sendMessage( new TextMessage( "ko" ) );
-			session.sendMessage( new TextMessage( "gg" ) );
-			oppoSession.sendMessage( new TextMessage( "gg" ) );
+			sendMsgToClient( oppoSession, "ko" );
+			sendMsgToClient( session, "gg" );
+			sendMsgToClient( oppoSession, "gg" );
 			sessionList.remove(pcmessage.getUserId());
 			sessionList.remove(pcmessage.getOppoId());
 			gameStartList.remove(pcmessage.getUserId());
@@ -128,13 +128,17 @@ public class ActionHandler {
 	
 	private void handleInvalidMessage( WebSocketSession session, PCMessage pcmessage )
 			throws InterruptedException, IOException{
-		session.sendMessage( new TextMessage( "Invalid Message:"+pcmessage.getMessage() ) );
+		sendMsgToClient( session, "Invalid Message:"+pcmessage.getMessage() ) );
 	}
 	
 	private void handleAdminList( WebSocketSession session )
 			throws InterruptedException, IOException{
-		session.sendMessage( new TextMessage( "sessionList:"+sessionList ) );
-		session.sendMessage( new TextMessage( "reverseSessionList:"+reverseSessionList ) );
-		session.sendMessage( new TextMessage( "gameStartList:"+gameStartList ) );
+		sendMsgToClient( session, "sessionList:"+sessionList );
+		sendMsgToClient( session, "reverseSessionList:"+reverseSessionList );
+		sendMsgToClient( session, "gameStartList:"+gameStartList );
+	}
+	
+	private void sendMsgToClient( WebSocketSession session, String msg){
+		session.sendMessage( new TextMessage( msg ) );
 	}
 }
