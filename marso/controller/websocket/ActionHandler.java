@@ -39,8 +39,6 @@ protected class ActionHandler {
 		PCMessage pcmessage = null;
 		try{
 			pcmessage = new PCMessage( textMessage );
-			pcmessage.logMessage();
-			pcmessage.parseMessage();
 			GameAction action = actions.get( pcmessage.getAction() );
 			if (action == null) {
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
@@ -59,11 +57,6 @@ protected class ActionHandler {
 			logger.error("Exception:", e);
 			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
-	}
-	
-	private void handleInvalidMessage( WebSocketSession session, PCMessage pcmessage )
-			throws InterruptedException, IOException{
-		session.sendMessage( new TextMessage( "Invalid Message:"+pcmessage.getMessage() ) );
 	}
 	
 	protected void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
