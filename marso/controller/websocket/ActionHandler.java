@@ -19,6 +19,16 @@ protected class ActionHandler {
 	private final Map<String, String> gameStartList = new ConcurrentHashMap<String, String>();
 	//<session_id, user_id>
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
+	private final Map<Key, GameAction> actions = new HashMap<>();
+	
+	public ActionHandler(){		
+		actions.add("conn", new GameConnect());
+		actions.add("lshg", new GameGridListing());
+		actions.add("lsvg", new GameGridListing());
+		actions.add("rshg", new GameGridListing());
+		actions.add("rsvg", new GameGridListing());
+		actions.add("ready", new GameReady());
+	}
 	
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
@@ -44,6 +54,13 @@ protected class ActionHandler {
 	
 	public void handlePCMessage(WebSocketSession session, PCMessage pcmessage)
 			throws InterruptedException, IOException, Exception {
+		
+		GameAction action = actions.get( pcmessage.getAction() );
+		if (action == null) {
+			handleInvalidMessage( session, pcmessage );
+		}
+		action.execute( session, pcmessage );
+		
 		switch( pcmessage.getAction() ) {
 			case "adminlist":
 				handleAdminList( session );
@@ -178,7 +195,7 @@ protected class ActionHandler {
 		}
 	}
 	
-	private void sendMsgToClient( WebSocketSession session, String msg){
+	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
 	}
 }
