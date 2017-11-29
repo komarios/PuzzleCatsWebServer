@@ -8,8 +8,16 @@ protected class GameEnd extends GameAction {
 			sendMsgToClient( session, "oppo_no_conn" );
 		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
 			sendMsgToClient( session, "oppo_no_ready" );
-		else
-			sendMsgToClient( oppoSession, pcmessage.getAction() );
-		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
+		else {
+			sendMsgToClient( oppoSession, "ko" );
+			sendMsgToClient( session, "gg" );
+			sendMsgToClient( oppoSession, "gg" );
+			sessionList.remove(pcmessage.getUserId());
+			sessionList.remove(pcmessage.getOppoId());
+			gameStartList.remove(pcmessage.getUserId());
+			gameStartList.remove(pcmessage.getOppoId());
+			reverseSessionList.remove(session.getId());
+			reverseSessionList.remove(oppoSession.getId());
+		}
           }
 }
