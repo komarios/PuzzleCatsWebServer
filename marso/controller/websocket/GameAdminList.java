@@ -1,11 +1,11 @@
 package marso.controller.websocket;
 
 protected class GameAdminList implements GameAction {
-          public PCResponse execute( String mySessionId, PCMessage pcmessage, String oppoSessionId ) {
+          public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();	
-		response.addMessage( mySessionId, "sessionList:"+sessionList );
-		response.addMessage( mySessionId, "reverseSessionList:"+reverseSessionList );
-		response.addMessage( mySessionId, "gameStartList:"+gameStartList );
+		response.addMessage( pcmessage.getUserId(), "sessionList:"+sessionList );
+		response.addMessage( pcmessage.getUserId(), "reverseSessionList:"+reverseSessionList );
+		response.addMessage( pcmessage.getUserId(), "gameStartList:"+gameStartList );
 		return response;
           }
 }
