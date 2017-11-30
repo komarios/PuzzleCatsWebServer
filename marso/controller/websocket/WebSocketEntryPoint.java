@@ -44,9 +44,14 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 			GameAction action = actions.get( pcmessage.getAction() );
 			if (action == null)
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
-			List<String[]> messages = action.execute( pcmessage.getUserId(), pcmessage, pcmessage.getOppoId() );
-			for (String[] message : messages)
+			PCResponse response = action.execute( pcmessage.getUserId(), pcmessage, pcmessage.getOppoId() );
+			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
+		 	for ( String[] statusUpdate : response.statusUpdates ){
+				gameStartList.put( statusUpdate[0],  statusUpdate[1] );
+				if( statusUpdate[1].equals("remove") )
+					gameStartList.remove( statusUpdate[0] );
+			}
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
 			throw e;
