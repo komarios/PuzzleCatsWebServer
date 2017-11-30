@@ -40,7 +40,8 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		PCMessage pcmessage = null;
 		try{
 			pcmessage = new PCMessage( textMessage );
-			refreshSessionList( pcmessage.getUserId(), session );
+			sessionList.put( pcmessage.getUserId(), session);
+			reverseSessionList.put( session.getId(), pcmessage.getUserId() );
 			GameAction action = actions.get( pcmessage.getAction() );
 			if (action == null)
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
@@ -89,11 +90,6 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		actions.add("ko", new GameEnd());
 		actions.add("adminlist", new GameAdminList());
 	}
-	private void refreshSessionList( pcmessage.getUserId(), session ){
-		sessionList.put( pcmessage.getUserId(), session);
-		reverseSessionList.put( session.getId(), pcmessage.getUserId() );
-		//TODO: Check for session hijacking
-	|	
 	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
 	}
