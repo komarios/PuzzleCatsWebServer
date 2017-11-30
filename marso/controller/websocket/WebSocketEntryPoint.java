@@ -64,6 +64,17 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		logger.info( "WebSocket was closed:"+ session.getId() );
+		String user_id = reverseSessionList.get( session.getId() );
+		if ( user_id != null ) {
+			if( sessionList.get(user_id) != null )
+				sessionList.remove(user_id);
+			//if( gameStartList.get(user_id) != null )
+			//	gameStartList.remove(user_id);
+			//TODO: fix game status
+			if( reverseSessionList.get(session.getId()) != null )
+				reverseSessionList.remove(session.getId());
+			logger.info( "WebSocket was cleaned up:"+user_id );
+		}
 		//TODO:ActionHandler.INSTANCE.cleanUpOnDisconnect( session, status);
 		//OR
 		//TODO: handle reconnects
@@ -85,20 +96,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		sessionList.put( pcmessage.getUserId(), session);
 		reverseSessionList.put( session.getId(), pcmessage.getUserId() );
 		//TODO: Check for session hijacking
-	|
-	public void cleanUpOnDisconnect(WebSocketSession session, CloseStatus status) throws Exception {
-		String user_id = reverseSessionList.get( session.getId() );
-		if ( user_id != null ) {
-			if( sessionList.get(user_id) != null )
-				sessionList.remove(user_id);
-			//if( gameStartList.get(user_id) != null )
-			//	gameStartList.remove(user_id);
-			//TODO: fix game status
-			if( reverseSessionList.get(session.getId()) != null )
-				reverseSessionList.remove(session.getId());
-			logger.info( "WebSocket was cleaned up:"+user_id );
-		}
-	}	
+	|	
 	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
 	}
