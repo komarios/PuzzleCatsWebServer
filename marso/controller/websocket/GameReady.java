@@ -6,7 +6,7 @@ protected class GameReady implements GameAction {
 		if( oppoSessionId.equals("") )
 			response.addMessage( mySessionId, "oppo_no_conn" );
 		else {
-			gameStartList.put( pcmessage.getUserId(), "ready");
+			response.addStatusUpdate( pcmessage.getUserId(), "ready" );
 			response.addMessage( mySessionId, "readyok" );
 			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
 				response.addMessage( mySessionId, "begin:7" );
