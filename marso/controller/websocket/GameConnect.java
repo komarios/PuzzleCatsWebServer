@@ -7,7 +7,7 @@ protected class GameConnect implements GameAction {
 		messages.add( new String[] { mySessionId, "connok" );
 		if ( ! oppoSessionId.equals("") ) {
 			messages.add( new String[] { mySessionId, "conn2ok" );
-			messages.add( new String[] { oppoSession, "conn2ok" );
+			messages.add( new String[] { oppoSessionId, "conn2ok" );
 		}
 		return messages;
           }
