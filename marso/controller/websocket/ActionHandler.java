@@ -21,8 +21,7 @@ protected class ActionHandler {
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
 	private final Map<Key, GameAction> actions = new HashMap<>();
 	
-	public final static ActionHandler INSTANCE = new Singleton();	
-	private ActionHandler(){
+	public ActionHandler(){
 		actions.add("conn", new GameConnect());
 		actions.add("lshg", new GameGridListing());
 		actions.add("lsvg", new GameGridListing());
