@@ -5,11 +5,11 @@ protected class GameBreak implements GameAction {
 			throws InterruptedException, IOException{
 		List<String[]> messages = new ArrayList<String[]>();
 		if( oppoSessionId.equals("") )
-			messages.add( new String[] { mySessionId, "oppo_no_conn" );
+			messages.add( new String[] { mySessionId, "oppo_no_conn" } );
 		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
-			messages.add( new String[] { mySessionId, "oppo_no_ready" );
+			messages.add( new String[] { mySessionId, "oppo_no_ready" } );
 		else
-			messages.add( new String[] { oppoSessionId, pcmessage.getAction() );
+			messages.add( new String[] { oppoSessionId, pcmessage.getAction() } );
 		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
 		return messages;
           }
