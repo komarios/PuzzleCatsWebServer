@@ -1,16 +1,16 @@
 package marso.controller.websocket;
 
 protected class GameEnd implements GameAction {
-          public PCResponse execute( String mySessionId, PCMessage pcmessage, String oppoSessionId ) {			
+          public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {		
 		PCResponse response = new PCResponse();
-		if( oppoSessionId.equals("") )
-			response.addMessage( mySessionId, "oppo_no_conn" );
-		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
-			response.addMessage( mySessionId, "oppo_no_ready" );
+		if( pcmessage.getOppoId().equals("") )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_conn" );
+		else if( oppoStatus == null )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_ready" );
 		else {
-			response.addMessage( oppoSessionId, "ko" );
-			response.addMessage( mySessionId, "gg" );
-			response.addMessage( oppoSessionId, "gg" );
+			response.addMessage( pcmessage.getOppoId(), "ko" );
+			response.addMessage( pcmessage.getUserId(), "gg" );
+			response.addMessage( pcmessage.getOppoId(), "gg" );
 			response.addStatusUpdate( pcmessage.getUserId(), "remove" );
 			response.addStatusUpdate( pcmessage.getOppoId(), "remove" );
 		}
