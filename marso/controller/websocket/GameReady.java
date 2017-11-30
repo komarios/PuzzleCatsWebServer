@@ -1,17 +1,19 @@
 package marso.controller.websocket;
 
 protected class GameReady implements GameAction {
-          public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
+          public List<String[]> execute( String mySessionId, PCMessage pcmessage, String oppoSessionId )
 			throws InterruptedException, IOException{
-		if( oppoSession == null )
-			sendMsgToClient( session, "oppo_no_conn" );
+		List<String[]> messages = new ArrayList<String[]>();
+		if( oppoSessionId.equals("") )
+			messages.add( new String[] { mySessionId, "oppo_no_conn" } );
 		else {
 			gameStartList.put( pcmessage.getUserId(), "ready");
-			sendMsgToClient( session,  "readyok" );
+			messages.add( new String[] { mySessionId, "readyok" } );
 			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
-				sendMsgToClient( session,  "begin:7" );
-				sendMsgToClient( oppoSession, "begin:7" );
+				messages.add( new String[] { mySessionId, "begin:7" } );
+				messages.add( new String[] { oppoSessionId, "begin:7" } );
 			}
 		}
+		return messages;
           }
 }
