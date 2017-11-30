@@ -1,12 +1,12 @@
 package marso.controller.websocket;
 
 protected class GameGridListing implements GameAction {
-          public PCResponse execute( String mySessionId, PCMessage pcmessage, String oppoSessionId ) {			
+          public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {		
 		PCResponse response = new PCResponse();
-		if( oppoSessionId.equals("") )
-			response.addMessage( mySessionId, "oppo_no_conn" );
+		if( pcmessage.getOppoId().equals("") )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_conn" );
 		else
-			response.addMessage( oppoSessionId, pcmessage.getAction() );
+			response.addMessage( pcmessage.getOppoId(), pcmessage.getAction() );
 		return response;
           }
 }
