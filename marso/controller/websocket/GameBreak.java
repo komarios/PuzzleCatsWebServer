@@ -1,14 +1,14 @@
 package marso.controller.websocket;
 
 protected class GameBreak implements GameAction {
-	  public PCResponse  execute( String mySessionId, PCMessage pcmessage, String oppoSessionId ) {
+	  public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();
-		if( oppoSessionId.equals("") )
-			response.addMessage( mySessionId, "oppo_no_conn" );
-		else if( gameStartList.get( pcmessage.getOppoId() ) == null )
-			response.addMessage( mySessionId, "oppo_no_ready" );
+		if( pcmessage.getOppoId().equals("") )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_conn" );
+		else if( oppoStatus == null )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_ready" );
 		else
-			response.addMessage( oppoSessionId, pcmessage.getAction() );
+			response.addMessage( pcmessage.getOppoId(), pcmessage.getAction() );
 		//TODO: ACK: session.sendMessage( new TextMessage( "breakok:moveid" ) );
 		return response;
           }
