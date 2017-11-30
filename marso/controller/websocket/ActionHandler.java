@@ -76,6 +76,12 @@ protected class ActionHandler {
 			reverseSessionList.remove(session.getId());
 			logger.info( "WebSocket was cleaned up:"+user_id );
 		}
+		/*sessionList.remove(pcmessage.getUserId());
+		sessionList.remove(pcmessage.getOppoId());
+		gameStartList.remove(pcmessage.getUserId());
+		gameStartList.remove(pcmessage.getOppoId());
+		reverseSessionList.remove(session.getId());
+		reverseSessionList.remove(oppoSession.getId());*/
 	}	
 	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
