@@ -11,8 +11,8 @@ protected class GameEnd implements GameAction {
 			response.addMessage( oppoSessionId, "ko" );
 			response.addMessage( mySessionId, "gg" );
 			response.addMessage( oppoSessionId, "gg" );
-			gameStartList.remove(pcmessage.getUserId());
-			gameStartList.remove(pcmessage.getOppoId());
+			response.addStatusUpdate( pcmessage.getUserId(), "" );
+			response.addStatusUpdate( pcmessage.getOppoId(), "" );
 		}
 		return response;
           }
