@@ -1,16 +1,16 @@
 package marso.controller.websocket;
 
 protected class GameReady implements GameAction {
-          public PCResponse execute( String mySessionId, PCMessage pcmessage, String oppoSessionId ) {
+          public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();
-		if( oppoSessionId.equals("") )
-			response.addMessage( mySessionId, "oppo_no_conn" );
+		if( pcmessage.getOppoId().equals("") )
+			response.addMessage( pcmessage.getUserId(), "oppo_no_conn" );
 		else {
 			response.addStatusUpdate( pcmessage.getUserId(), "ready" );
-			response.addMessage( mySessionId, "readyok" );
-			if ( gameStartList.get( pcmessage.getOppoId() ) != null ) {
-				response.addMessage( mySessionId, "begin:7" );
-				response.addMessage( oppoSessionId, "begin:7" );
+			response.addMessage( pcmessage.getUserId(), "readyok" );
+			if ( oppoStatus!= null ) {
+				response.addMessage( pcmessage.getUserId(), "begin:7" );
+				response.addMessage( pcmessage.getOppoId(), "begin:7" );
 			}
 		}
 		return response;
