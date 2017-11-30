@@ -12,12 +12,8 @@ protected class GameEnd implements GameAction {
 			messages.add( new String[] { oppoSessionId, "ko" } );
 			messages.add( new String[] { mySessionId, "gg" } );
 			messages.add( new String[] { oppoSessionId, "gg" } );
-			sessionList.remove(pcmessage.getUserId());
-			sessionList.remove(pcmessage.getOppoId());
 			gameStartList.remove(pcmessage.getUserId());
 			gameStartList.remove(pcmessage.getOppoId());
-			reverseSessionList.remove(session.getId());
-			reverseSessionList.remove(oppoSession.getId());
 		}
 		return messages;
           }
