@@ -1,9 +1,11 @@
 package marso.controller.websocket;
 
 protected class GamePing implements GameAction {
-          public void execute( WebSocketSession session, PCMessage pcmessage, WebSocketSession oppoSession )
+          public List<String[]> execute( String mySessionId, PCMessage pcmessage, String oppoSessionId )
 			throws InterruptedException, IOException{			
-		sendMsgToClient( session, "pong:"+pcmessage.getData() );
+		List<String[]> messages = new ArrayList<String[]>();
+		messages.add( new String[] { mySessionId, "pong:"+pcmessage.getData()  } );
 		//TODO: Handle ping from user-to-user 
+		return messages;
           }
 }
