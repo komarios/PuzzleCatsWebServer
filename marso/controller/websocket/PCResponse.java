@@ -5,7 +5,7 @@ public class PCResponse {
         public void addMessage(String userId, String msg){
                 messages.add( new String[] { userId, msg } );
         }
-        public String[] getMessage(int i){
-                return messages.get( i );
+        public List<String[]> getMessages(){
+                return messages;
         }
 }
