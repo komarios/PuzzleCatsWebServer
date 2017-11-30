@@ -44,8 +44,7 @@ protected class ActionHandler {
 			if (action == null) {
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
 			}
-			WebSocketSession oppoSession = sessionList.get( pcmessage.getOppoId() );
-			List<String[]> messages = action.execute( session, pcmessage, oppoSession );
+			List<String[]> messages = action.execute( pcmessage.getUserId(), pcmessage, pcmessage.getOppoId() );
 			for (String[] message : messages)
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
 		} catch (InterruptedException e){
