@@ -94,7 +94,8 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		actions.add("ko", new GameEnd());
 		actions.add("adminlist", new GameAdminList());
 	}
-	private static void sendMsgToClient( WebSocketSession session, String msg){
+	private static void sendMsgToClient( WebSocketSession session, String msg)
+			throws InterruptedException, IOException {
 		session.sendMessage( new TextMessage( msg ) );
 	}
 }
