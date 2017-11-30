@@ -37,9 +37,8 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
 		logger.info( "WebSocket client "+ session.getId() +" send message:"+  new String(textMessage.asBytes()) );
-		PCMessage pcmessage = null;
 		try{
-			pcmessage = new PCMessage( textMessage );
+			PCMessage pcmessage = new PCMessage( textMessage );
 			sessionList.put( pcmessage.getUserId(), session);
 			reverseSessionList.put( session.getId(), pcmessage.getUserId() );
 			GameAction action = actions.get( pcmessage.getAction() );
