@@ -68,15 +68,12 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		if ( user_id != null ) {
 			if( sessionList.get(user_id) != null )
 				sessionList.remove(user_id);
+			reverseSessionList.remove(session.getId());
 			//if( gameStartList.get(user_id) != null )
 			//	gameStartList.remove(user_id);
 			//TODO: fix game status
-			if( reverseSessionList.get(session.getId()) != null )
-				reverseSessionList.remove(session.getId());
 			logger.info( "WebSocket was cleaned up:"+user_id );
 		}
-		//TODO:ActionHandler.INSTANCE.cleanUpOnDisconnect( session, status);
-		//OR
 		//TODO: handle reconnects
 	}
 	public WebSocketEntryPoint(){
