@@ -1,14 +1,13 @@
 package marso.controller.websocket;
 
 protected class GameConnect implements GameAction {
-          public PCResponse execute( String mySessionId, PCMessage pcmessage, String oppoSessionId )
-			throws InterruptedException, IOException{			
+          public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {			
 		PCResponse response = new PCResponse();
-		response.addMessage( mySessionId, "connok" );
+		response.addMessage( pcmessage.getUserId(), "connok" );
 		//TODO: player matchup for a new game, code missing 
 		if ( ! oppoSessionId.equals("") ) {
-			response.addMessage( mySessionId, "conn2ok" );
-			response.addMessage( oppoSessionId, "conn2ok" );
+			response.addMessage( pcmessage.getUserId(), "conn2ok" );
+			response.addMessage( pcmessage.getOppoId(), "conn2ok" );
 		}
 		return response;
           }
