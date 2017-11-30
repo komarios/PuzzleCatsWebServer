@@ -5,6 +5,7 @@ protected class GameConnect implements GameAction {
 			throws InterruptedException, IOException{			
 		PCResponse response = new PCResponse();
 		response.addMessage( mySessionId, "connok" );
+		//TODO: player matchup for a new game, code missing 
 		if ( ! oppoSessionId.equals("") ) {
 			response.addMessage( mySessionId, "conn2ok" );
 			response.addMessage( oppoSessionId, "conn2ok" );
