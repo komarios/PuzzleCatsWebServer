@@ -37,30 +37,6 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
 		logger.info( "WebSocket client "+ session.getId() +" send message:"+  new String(textMessage.asBytes()) );
-		ActionHandler.INSTANCE.handleTextMessage( session, textMessage );
-	}	
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		logger.info( "WebSocket was closed:"+ session.getId() );
-		//TODO:ActionHandler.INSTANCE.cleanUpOnDisconnect( session, status);
-		//OR
-		//TODO: handle reconnects
-	}
-	public WebSocketEntryPoint(){
-		super();
-		actions.add("conn", new GameConnect());
-		actions.add("lshg", new GameGridListing());
-		actions.add("lsvg", new GameGridListing());
-		actions.add("rshg", new GameGridListing());
-		actions.add("rsvg", new GameGridListing());
-		actions.add("ready", new GameReady());
-		actions.add("break", new GameBreak());
-		actions.add("ping", new GamePing());
-		actions.add("ko", new GameEnd());
-		actions.add("adminlist", new GameAdminList());
-	}	
-	public void handleMessage(WebSocketSession session, TextMessage textMessage)
-			throws InterruptedException, IOException {
 		PCMessage pcmessage = null;
 		try{
 			pcmessage = new PCMessage( textMessage );
@@ -85,6 +61,26 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 			logger.error("Exception:", e);
 			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
+	}	
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		logger.info( "WebSocket was closed:"+ session.getId() );
+		//TODO:ActionHandler.INSTANCE.cleanUpOnDisconnect( session, status);
+		//OR
+		//TODO: handle reconnects
+	}
+	public WebSocketEntryPoint(){
+		super();
+		actions.add("conn", new GameConnect());
+		actions.add("lshg", new GameGridListing());
+		actions.add("lsvg", new GameGridListing());
+		actions.add("rshg", new GameGridListing());
+		actions.add("rsvg", new GameGridListing());
+		actions.add("ready", new GameReady());
+		actions.add("break", new GameBreak());
+		actions.add("ping", new GamePing());
+		actions.add("ko", new GameEnd());
+		actions.add("adminlist", new GameAdminList());
 	}
 	private void refreshSessionList( pcmessage.getUserId(), session ){
 		sessionList.put( pcmessage.getUserId(), session);
