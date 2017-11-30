@@ -92,17 +92,13 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		if ( user_id != null ) {
 			if( sessionList.get(user_id) != null )
 				sessionList.remove(user_id);
-			if( gameStartList.get(user_id) != null )
-				gameStartList.remove(user_id);
-			reverseSessionList.remove(session.getId());
+			//if( gameStartList.get(user_id) != null )
+			//	gameStartList.remove(user_id);
+			//TODO: fix game status
+			if( reverseSessionList.get(session.getId()) != null )
+				reverseSessionList.remove(session.getId());
 			logger.info( "WebSocket was cleaned up:"+user_id );
 		}
-		/*sessionList.remove(pcmessage.getUserId());
-		sessionList.remove(pcmessage.getOppoId());
-		gameStartList.remove(pcmessage.getUserId());
-		gameStartList.remove(pcmessage.getOppoId());
-		reverseSessionList.remove(session.getId());
-		reverseSessionList.remove(oppoSession.getId());*/
 	}	
 	private static void sendMsgToClient( WebSocketSession session, String msg){
 		session.sendMessage( new TextMessage( msg ) );
