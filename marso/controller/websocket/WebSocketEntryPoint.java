@@ -83,16 +83,16 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	}
 	public WebSocketEntryPoint(){
 		super();
-		actions.add("conn", new GameConnect());
-		actions.add("lshg", new GameGridListing());
-		actions.add("lsvg", new GameGridListing());
-		actions.add("rshg", new GameGridListing());
-		actions.add("rsvg", new GameGridListing());
-		actions.add("ready", new GameReady());
-		actions.add("break", new GameBreak());
-		actions.add("ping", new GamePing());
-		actions.add("ko", new GameEnd());
-		actions.add("adminlist", new GameAdminList());
+		actions.put("conn", new GameConnect());
+		actions.put("lshg", new GameGridListing());
+		actions.put("lsvg", new GameGridListing());
+		actions.put("rshg", new GameGridListing());
+		actions.put("rsvg", new GameGridListing());
+		actions.put("ready", new GameReady());
+		actions.put("break", new GameBreak());
+		actions.put("ping", new GamePing());
+		actions.put("ko", new GameEnd());
+		actions.put("adminlist", new GameAdminList());
 	}
 	private static void sendMsgToClient( WebSocketSession session, String msg)
 			throws InterruptedException, IOException {
