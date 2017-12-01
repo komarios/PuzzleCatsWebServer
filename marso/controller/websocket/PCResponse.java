@@ -3,7 +3,7 @@ package marso.controller.websocket;
 import java.util.List;
 import java.util.ArrayList;
 
-protected class PCResponse {
+public class PCResponse {
         protected List<String[]> messages = new ArrayList<String[]>();
         public void addMessage(String userId, String msg){
                 messages.add( new String[] { userId, msg } );
