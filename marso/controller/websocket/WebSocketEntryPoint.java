@@ -31,16 +31,16 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	
 	public WebSocketEntryPoint(){
 		super();
-		actions.put("conn", new GameConnect());
-		actions.put("lshg", new GameGridListing());
-		actions.put("lsvg", new GameGridListing());
-		actions.put("rshg", new GameGridListing());
-		actions.put("rsvg", new GameGridListing());
+		actions.put("conn",  new GameConnect());
+		actions.put("lshg",  new GameGridListing());
+		actions.put("lsvg",  new GameGridListing());
+		actions.put("rshg",  new GameGridListing());
+		actions.put("rsvg",  new GameGridListing());
 		actions.put("ready", new GameReady());
 		actions.put("break", new GameBreak());
-		actions.put("ping", new GamePing());
-		actions.put("ko", new GameEnd());
-		actions.put("InvalidAction", new GameInvalidAction());
+		actions.put("ping",  new GamePing());
+		actions.put("ko",    new GameEnd());
+		actions.put("InvalidAction",  new GameInvalidAction());
 		actions.put("InvalidMessage", new GameInvalidMessage());
 		//actions.put("adminlist", new GameAdminList());
 	}
