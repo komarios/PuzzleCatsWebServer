@@ -60,11 +60,8 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 			PCResponse response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
 			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
-		 	for ( String[] statusUpdate : response.statusUpdates ){
-				gameStartList.put( statusUpdate[0],  statusUpdate[1] );
-				if( statusUpdate[1].equals("remove") )
-					gameStartList.remove( statusUpdate[0] );
-			}
+		 	for ( String[] statusUpdate : response.statusUpdates )
+				updateUserGameStatus( statusUpdate[0],  statusUpdate[1] );
 		} catch (InterruptedException e){
 			logger.error("InterruptedException:", e);
 			throw e;
@@ -105,6 +102,11 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		sessionList.put(        userid,          session );
 		reverseSessionList.put( session.getId(), userid  );
 		//TODO: handle reconnects
+	}
+	private void updateUserGameStatus( userId,  status ){
+		gameStartList.put( userId,  status );
+		if( status.equals("remove") )
+			gameStartList.remove( userId );
 	}
 	private void sendMsgToClient( WebSocketSession session, String msg)
 			throws InterruptedException, IOException {
