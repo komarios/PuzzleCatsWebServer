@@ -17,6 +17,8 @@ public class PCMessage {
 	
 	public PCMessage( TextMessage textMessage ) throws Exception {
 		message = new String(textMessage.asBytes());
+		logger.info( "PCMessage_is:"+this.toString() );
+		pcmessage.parseMessage();
 	}
 	private void debugMatchAndPrint(String mp){
 		Pattern myPattern = Pattern.compile( mp );
@@ -27,11 +29,7 @@ public class PCMessage {
 		Matcher matcher = pattern.matcher( message );
 		return matcher.matches();
 	}
-	public boolean parseMessage(){
-		if( !isValid() ){
-			return false;
-		}
-		
+	private void parseMessage(){
 		try{
 			user_id = message.substring(                      0, message.indexOf("&") );
 			action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );
@@ -40,33 +38,28 @@ public class PCMessage {
 				action  = message.substring( message.indexOf("&")+1, message.indexOf(":") );
 			}
 			oppo_id = message.substring( message.indexOf("?")+1, message.length()     );
-		}catch(Exception e){
+		} catch ( Exception e ) {
 			logger.error( "Exception in PCMessage_parseMessage:"+e.getMessage()+", and message = "+message );
 			e.printStackTrace();
-			return false;
+			throw new InvalidMessageException( "Exception Parsing Message : " + e.getMessage() );
 		}
-		return true;
 	}
-	
 	public String getMessage(){
 		return message;
 	}
 	public String getUserId(){
 		return user_id;
-	}	
+	}
 	public String getAction(){
 		return action;
-	}	
+	}
 	public String getData(){
 		return data;
-	}	
+	}
 	public String getOppoId(){
 		return oppo_id;
 	}
-	public void logMessage(){
-		logger.warn( "PCMessage_is:"+this.toString() );
-	}	
 	public String toString(){
 		return (message+":"+user_id+"&"+action+":"+data+"?"+oppo_id);
-	}		
+	}
 }
