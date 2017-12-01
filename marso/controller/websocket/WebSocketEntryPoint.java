@@ -63,11 +63,12 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 				gameAction = actions.get( pcmessage.getAction() );
 				if (gameAction == null)
 					gameAction = actions.get( "InvalidAction" );
+				response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
 			} catch (InvalidMessageException e){
 				logger.error("InvalidMessageException:", e);
 				gameAction = actions.get( "InvalidMessage" );
-			} 
-			response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
+				response = gameAction.execute( null, null );
+			}			
 			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
 		 	for ( String[] statusUpdate : response.statusUpdates )
