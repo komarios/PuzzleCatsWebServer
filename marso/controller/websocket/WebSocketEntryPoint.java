@@ -40,6 +40,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		actions.put("break", new GameBreak());
 		actions.put("ping", new GamePing());
 		actions.put("ko", new GameEnd());
+		actions.put("InvalidAction", new GameInvalidAction());
 		//actions.put("adminlist", new GameAdminList());
 	}
 	@Override
@@ -52,11 +53,10 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		logger.info( "WebSocket client "+ session.getId() +" send message:"+  new String(textMessage.asBytes()) );
 		try{
 			PCMessage pcmessage = new PCMessage( textMessage );
-			sessionList.put( pcmessage.getUserId(), session);
-			reverseSessionList.put( session.getId(), pcmessage.getUserId() );
+			refreshUserLists( pcmessage.getUserId(), session );
 			GameAction gameAction = actions.get( pcmessage.getAction() );
 			if (gameAction == null)
-				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
+				gameAction = actions.get( "InvalidAction" );
 			PCResponse response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
 			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
@@ -94,14 +94,19 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		}
 		//TODO: handle reconnects
 	}
-	public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
+	private PCResponse getAdminList( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();	
 		response.addMessage( pcmessage.getUserId(), "sessionList:"+sessionList );
 		response.addMessage( pcmessage.getUserId(), "reverseSessionList:"+reverseSessionList );
 		response.addMessage( pcmessage.getUserId(), "gameStartList:"+gameStartList );
 		return response;
 	}
-	private static void sendMsgToClient( WebSocketSession session, String msg)
+	private void refreshUserLists( String userid, WebSocketSession session ){
+		sessionList.put(        userid,          session );
+		reverseSessionList.put( session.getId(), userid  );
+		//TODO: handle reconnects
+	}
+	private void sendMsgToClient( WebSocketSession session, String msg)
 			throws InterruptedException, IOException {
 		session.sendMessage( new TextMessage( msg ) );
 	}
