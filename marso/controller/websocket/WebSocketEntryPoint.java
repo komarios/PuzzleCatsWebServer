@@ -54,10 +54,10 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 			PCMessage pcmessage = new PCMessage( textMessage );
 			sessionList.put( pcmessage.getUserId(), session);
 			reverseSessionList.put( session.getId(), pcmessage.getUserId() );
-			GameAction action = actions.get( pcmessage.getAction() );
-			if (action == null)
+			GameAction gameAction = actions.get( pcmessage.getAction() );
+			if (gameAction == null)
 				throw new InvalidMessageException("Action not found :" + pcmessage.getAction() );
-			PCResponse response = action.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
+			PCResponse response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
 			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
 		 	for ( String[] statusUpdate : response.statusUpdates ){
