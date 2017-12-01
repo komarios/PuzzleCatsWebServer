@@ -1,6 +1,6 @@
 package marso.controller.websocket;
 
-protected class GameBreak implements GameAction {
+public class GameBreak implements GameAction {
 	  public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();
 		if( pcmessage.getOppoId().equals("") )
