@@ -15,7 +15,7 @@ public class PCMessage {
 	private String data    = "";
 	private String oppo_id = "";
 	
-	public PCMessage( TextMessage textMessage ) throws Exception {
+	public PCMessage( TextMessage textMessage ) throws InvalidMessageException {
 		message = new String(textMessage.asBytes());
 		logger.info( "PCMessage_is:"+this.toString() );
 		parseMessage();
