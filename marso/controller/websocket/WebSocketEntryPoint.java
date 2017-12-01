@@ -29,6 +29,19 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
 	private final Map<Key, GameAction> actions = new HashMap<>();
 	
+	public WebSocketEntryPoint(){
+		super();
+		actions.put("conn", new GameConnect());
+		actions.put("lshg", new GameGridListing());
+		actions.put("lsvg", new GameGridListing());
+		actions.put("rshg", new GameGridListing());
+		actions.put("rsvg", new GameGridListing());
+		actions.put("ready", new GameReady());
+		actions.put("break", new GameBreak());
+		actions.put("ping", new GamePing());
+		actions.put("ko", new GameEnd());
+		//actions.put("adminlist", new GameAdminList());
+	}
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		logger.info( "WebSocket was opened:"+ session.getId() );
@@ -80,19 +93,6 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 			logger.info( "WebSocket was cleaned up:"+user_id );
 		}
 		//TODO: handle reconnects
-	}
-	public WebSocketEntryPoint(){
-		super();
-		actions.put("conn", new GameConnect());
-		actions.put("lshg", new GameGridListing());
-		actions.put("lsvg", new GameGridListing());
-		actions.put("rshg", new GameGridListing());
-		actions.put("rsvg", new GameGridListing());
-		actions.put("ready", new GameReady());
-		actions.put("break", new GameBreak());
-		actions.put("ping", new GamePing());
-		actions.put("ko", new GameEnd());
-		actions.put("adminlist", new GameAdminList());
 	}
 	public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
 		PCResponse response = new PCResponse();	
