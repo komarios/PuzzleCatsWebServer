@@ -41,6 +41,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		actions.put("ping", new GamePing());
 		actions.put("ko", new GameEnd());
 		actions.put("InvalidAction", new GameInvalidAction());
+		actions.put("InvalidMessage", new GameInvalidMessage());
 		//actions.put("adminlist", new GameAdminList());
 	}
 	@Override
@@ -51,13 +52,21 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage)
 			throws InterruptedException, IOException {
 		logger.info( "WebSocket client "+ session.getId() +" send message:"+  new String(textMessage.asBytes()) );
+		PCMessage pcmessage;
+		GameAction gameAction;
+		PCResponse response;
 		try{
-			PCMessage pcmessage = new PCMessage( textMessage );
-			refreshUserLists( pcmessage.getUserId(), session );
-			GameAction gameAction = actions.get( pcmessage.getAction() );
-			if (gameAction == null)
-				gameAction = actions.get( "InvalidAction" );
-			PCResponse response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
+			try{
+				pcmessage = new PCMessage( textMessage );
+				refreshUserLists( pcmessage.getUserId(), session );
+				gameAction = actions.get( pcmessage.getAction() );
+				if (gameAction == null)
+					gameAction = actions.get( "InvalidAction" );
+			} catch (InvalidMessageException e){
+				logger.error("InvalidMessageException:", e);
+				gameAction = actions.get( "InvalidMessage" );
+			} 
+			response = gameAction.execute( pcmessage, gameStartList.get( pcmessage.getOppoId() ) );
 			for ( String[] message : response.messages )
 				sendMsgToClient( sessionList.get( message[0] ), message[1] );
 		 	for ( String[] statusUpdate : response.statusUpdates )
@@ -68,12 +77,8 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		} catch (IOException e){
 			logger.error("IOException:", e);
 			throw e;
-		} catch (InvalidMessageException e){
-			logger.error("InvalidMessageException:", e);
-			sendMsgToClient( session,  "InvalidMessageException:" + e.getMessage() );
 		} catch (Exception e){
 			logger.error("Exception:", e);
-			sendMsgToClient( session, "Exception:" + e.getMessage() );
 		}
 	}	
 	@Override
