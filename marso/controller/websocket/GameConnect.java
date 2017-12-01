@@ -5,7 +5,7 @@ public class GameConnect implements GameAction {
 		PCResponse response = new PCResponse();
 		response.addMessage( pcmessage.getUserId(), "connok" );
 		//TODO: player matchup for a new game, code missing 
-		if ( ! oppoSessionId.equals("") ) {
+		if ( ! pcmessage.getOppoId().equals("") ) {
 			response.addMessage( pcmessage.getUserId(), "conn2ok" );
 			response.addMessage( pcmessage.getOppoId(), "conn2ok" );
 		}
