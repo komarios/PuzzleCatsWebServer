@@ -18,7 +18,7 @@ public class PCMessage {
 	public PCMessage( TextMessage textMessage ) throws Exception {
 		message = new String(textMessage.asBytes());
 		logger.info( "PCMessage_is:"+this.toString() );
-		pcmessage.parseMessage();
+		parseMessage();
 	}
 	private void debugMatchAndPrint(String mp){
 		Pattern myPattern = Pattern.compile( mp );
