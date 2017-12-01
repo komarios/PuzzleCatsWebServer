@@ -1,5 +1,8 @@
 package marso.controller.websocket;
 
+import java.util.List;
+import java.util.ArrayList;
+
 protected class PCResponse {
         protected List<String[]> messages = new ArrayList<String[]>();
         public void addMessage(String userId, String msg){
