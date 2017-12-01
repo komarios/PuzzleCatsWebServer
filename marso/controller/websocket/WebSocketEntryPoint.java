@@ -108,7 +108,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		reverseSessionList.put( session.getId(), userid  );
 		//TODO: handle reconnects
 	}
-	private void updateUserGameStatus( userId,  status ){
+	private void updateUserGameStatus( String userId, String status ){
 		gameStartList.put( userId,  status );
 		if( status.equals("remove") )
 			gameStartList.remove( userId );
