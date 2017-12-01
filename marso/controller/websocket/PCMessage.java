@@ -29,7 +29,7 @@ public class PCMessage {
 		Matcher matcher = pattern.matcher( message );
 		return matcher.matches();
 	}
-	private void parseMessage(){
+	private void parseMessage() throws InvalidMessageException {
 		try{
 			user_id = message.substring(                      0, message.indexOf("&") );
 			action  = message.substring( message.indexOf("&")+1, message.indexOf("?") );
