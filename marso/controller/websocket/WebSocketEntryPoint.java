@@ -27,7 +27,7 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 	private final Map<String, String> gameStartList = new ConcurrentHashMap<String, String>();
 	//<session_id, user_id>
 	private final Map<String, String> reverseSessionList = new ConcurrentHashMap<String, String>();
-	private final Map<Key, GameAction> actions = new HashMap<>();
+	private final Map<String, GameAction> actions = new HashMap<>();
 	
 	public WebSocketEntryPoint(){
 		super();
