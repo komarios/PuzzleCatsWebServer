@@ -94,6 +94,13 @@ public class WebSocketEntryPoint extends TextWebSocketHandler {
 		actions.put("ko", new GameEnd());
 		actions.put("adminlist", new GameAdminList());
 	}
+	public PCResponse execute( PCMessage pcmessage, String oppoStatus ) {
+		PCResponse response = new PCResponse();	
+		response.addMessage( pcmessage.getUserId(), "sessionList:"+sessionList );
+		response.addMessage( pcmessage.getUserId(), "reverseSessionList:"+reverseSessionList );
+		response.addMessage( pcmessage.getUserId(), "gameStartList:"+gameStartList );
+		return response;
+	}
 	private static void sendMsgToClient( WebSocketSession session, String msg)
 			throws InterruptedException, IOException {
 		session.sendMessage( new TextMessage( msg ) );
