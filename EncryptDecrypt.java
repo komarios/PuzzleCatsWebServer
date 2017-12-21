@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 public class EncryptDecrypt {
     public static String symmetric_key;
 	static {
-        EncryptDecrypt.symmetric_key = "oraclefinancialsolutions";
+        EncryptDecrypt.symmetric_key = "my_awsome_secret_private_key";
     }
     
     public static byte[] doAESCrypt(final byte[] array, final byte[] array2, final int n) throws Exception {
@@ -61,22 +61,9 @@ public class EncryptDecrypt {
 			System.out.println(args[1] +" "+ getDecryptedValue(args[1]));
 		} else {
 			System.out.println(args[1] +" "+ getEncryptedValue(args[1]));
-		} 
-        //System.out.println("enc " + getEncryptedValue("POSSTEST.WORLDAes"));
-        //System.out.println("decry " + getDecryptedValue("Hvf6hnk0RuoP0RX4xLdDLoWf+pCWd7lk5omqi3bIW8g="));
-		//System.out.println("FCUBS_SMS_POOl_NAME " + getDecryptedValue("TiwEqOKML/WOMOkX6TSE87xKctXbfJvzH6ugNw/wqdA="));
-		//FCUBS_SMS_POOl_NAME jdbc/fcjdevDSSMS
-		//System.out.println("FCUBS_MSG_SCHEMA_CON_POOLNAME " + getDecryptedValue("dvFEmDXmFayw5QDR6ciVUbxKctXbfJvzH6ugNw/wqdA="));
-		//FCUBS_MSG_SCHEMA_CON_POOLNAME FLEXTESTXA.WORLD
-		//System.out.println("EJB_SECURITY_CREDENTIALS " + getDecryptedValue("s5OOsXjZDgJVVYRoNIEzhw=="));
-		//EJB_SECURITY_CREDENTIALS romaniauat1
-		//System.out.println("FCUBS_MSG_SCHEMA_CON_POOLNAME " + getDecryptedValue("IT31BL78rDPpSn8tYMe9OA=="));
-		//FCUBS_MSG_SCHEMA_CON_POOLNAME FLEXTEST.WORLD
+		}
     }
 }
 // javac -cp commons-codec-1.9.jar EncryptDecrypt.java
-// java -cp ".;commons-codec-1.9.jar" EncryptDecrypt decrypt TiwEqOKML/WOMOkX6TSE87xKctXbfJvzH6ugNw/wqdA=
-// java -cp ".;commons-codec-1.9.jar" EncryptDecrypt encrypt jdbc/fcjdevDSSMS
-// /opt/java6/bin/javac -cp commons-codec-1.9.jar EncryptDecrypt.java
-// ssh root@ignite 'cd /backup_fcat/weblogic_sw/Scripts/installation; /opt/java6/bin/java -cp .:commons-codec-1.9.jar EncryptDecrypt encrypt albaniatrn1'
-// ssh root@ignite 'cd /backup_fcat/weblogic_sw/Scripts/installation; /opt/java6/bin/java -cp .:commons-codec-1.9.jar EncryptDecrypt decrypt s5OOsXjZDgJVVYRoNIEzhw=='
+// java -cp ".;commons-codec-1.9.jar" EncryptDecrypt decrypt {value}
+// java -cp ".;commons-codec-1.9.jar" EncryptDecrypt encrypt {value}
